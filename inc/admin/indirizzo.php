@@ -8,7 +8,7 @@ function dsi_register_indirizzo_post_type() {
 
     /** indirizzo **/
     $labels = array(
-        'name'                  => _x( 'Indirizzo di Studio', 'Post Type General Name', 'design_scuole_italia' ),
+        'name'                  => _x( 'Percorsi di Studio', 'Post Type General Name', 'design_scuole_italia' ),
         'singular_name'         => _x( 'Indirizzo di Studio', 'Post Type Singular Name', 'design_scuole_italia' ),
         'add_new'               => _x( 'Aggiungi un indirizzo', 'Post Type Singular Name', 'design_scuole_italia' ),
         'add_new_item'               => _x( 'Aggiungi un indirizzo', 'Post Type Singular Name', 'design_scuole_italia' ),
@@ -200,7 +200,12 @@ function dsi_add_indirizzo_metaboxes() {
         'id' => $prefix . 'procedura_esito',
         'name'        => __( 'Procedure collegate', 'design_scuole_italia' ),
         'desc' => __( 'Questo campo indica eventuali procedure collegate.' , 'design_scuole_italia' ),
-        'type' => 'textarea'
+        'type' => 'wysiwyg',
+        'options' => array(
+            'media_buttons' => false, // show insert/upload button(s)
+            'textarea_rows' => 4, // rows="..."
+            'teeny' => true, // output the minimal editor config used in Press This
+        ),
     ) );
 
     $cmb_undercontent->add_field( array(
@@ -264,12 +269,13 @@ function dsi_add_indirizzo_metaboxes() {
 	$cmb_undercontent->add_field( array(
 		'id' => $prefix . 'provider_autenticazione',
 		'name' => __( 'Provider di autenticazione', 'design_scuole_italia' ),
-		'desc' => __( 'Selezionare i provider di autenticazione tra SPID, Carta di Identità Elettronica (CIE) e Carta Nazionale dei Servizi (CNS).' , 'design_scuole_italia' ),
+		'desc' => __( 'Selezionare i provider di autenticazione tra SPID, Carta di Identità Elettronica (CIE), Carta Nazionale dei Servizi (CNS) e electronic IDentification Authentication and Signature (eIDAS).' , 'design_scuole_italia' ),
 		'type' => 'pw_multiselect',
 		'options' => array(
 		    'SPID' => 'SPID',
 			'CIE' => 'CIE',
-            'CNS' => 'CNS'
+            'CNS' => 'CNS',
+            'eIDAS' => 'eIDAS'
 		),
 		'attributes'    => array(
 			'data-conditional-id'     => $prefix.'modalita_autenticazione',
@@ -316,8 +322,12 @@ function dsi_add_indirizzo_metaboxes() {
         'id' => $prefix . 'calendario_classi_descrizione',
         'name'        => __( 'L\'orario delle classi', 'design_scuole_italia' ),
         'desc' => __( 'Testo introduttivo' , 'design_scuole_italia' ),
-        'type' => 'textarea',
-
+        'type' => 'wysiwyg',
+        'options' => array(
+            'media_buttons' => false, // show insert/upload button(s)
+            'textarea_rows' => 4, // rows="..."
+            'teeny' => true, // output the minimal editor config used in Press This
+        ),
     ) );
     $cmb_undercontent->add_field( array(
         'id' => $prefix . 'calendario_classi_file',
@@ -337,7 +347,12 @@ function dsi_add_indirizzo_metaboxes() {
         'id' => $prefix . 'libri_testo_descrizione',
         'name'        => __( 'Libri di testo', 'design_scuole_italia' ),
         'desc' => __( 'Testo introduttivo' , 'design_scuole_italia' ),
-        'type' => 'textarea',
+        'type' => 'wysiwyg',
+        'options' => array(
+            'media_buttons' => false, // show insert/upload button(s)
+            'textarea_rows' => 4, // rows="..."
+            'teeny' => true, // output the minimal editor config used in Press This
+        ),
     ) );
     $cmb_undercontent->add_field( array(
         'id' => $prefix . 'libri_testo_file',
@@ -431,8 +446,12 @@ function dsi_add_indirizzo_metaboxes() {
         'id' => $prefix . 'casi_particolari',
         'name'        => __( 'Casi particolari', 'design_scuole_italia' ),
         'desc' => __( 'Inserire come testo libero, eventuali casi particolari riferiti all\'ottenimento del Servizio in questione.' , 'design_scuole_italia' ),
-        'type' => 'textarea',
-
+        'type' => 'wysiwyg',
+        'options' => array(
+            'media_buttons' => false, // show insert/upload button(s)
+            'textarea_rows' => 4, // rows="..."
+            'teeny' => true, // output the minimal editor config used in Press This
+        ),
     ) );
 
     $cmb_undercontent->add_field( array(
@@ -448,12 +467,22 @@ function dsi_add_indirizzo_metaboxes() {
 
     ) );
 
+    $cmb_undercontent->add_field( array(
+        'id'   => $prefix . 'contatti_dedicati',
+        'name' => __( 'Modalità di contatto', 'design_scuole_italia' ),
+        'desc' => __( 'Sono presenti contatti dedicati per l\'indirizzo di studio. In caso contrario vengono mostrati in automatico i contatti (email e telefono) dell\'ufficio relazioni con il pubblico (URP) inseriti in Configurazione' , 'design_scuole_italia' ),
+        'type' => 'checkbox',
+    ) );
 
     $cmb_undercontent->add_field( array(
         'id'         => $prefix . 'mail',
-        'name'       => __( 'Riferimento mail', 'design_scuole_italia' ),
+        'name'       => __( 'Riferimento email', 'design_scuole_italia' ),
         'desc'       => __( 'Indirizzo di posta elettronica . ', 'design_scuole_italia' ),
         'type'       => 'text_email',
+        'attributes'    => array(
+            'data-conditional-id'     => $prefix.'contatti_dedicati',
+            'data-conditional-value'  => "true",
+        ),
         /*'attributes' => array(
             'data-conditional-id'    => $prefix . 'childof',
             'data-conditional-value' => '0',
@@ -466,6 +495,10 @@ function dsi_add_indirizzo_metaboxes() {
         'name'       => __( 'Riferimento telefonico ', 'design_scuole_italia' ),
         'desc'       => __( 'Telefono . ', 'design_scuole_italia' ),
         'type'       => 'text',
+        'attributes'    => array(
+            'data-conditional-id'     => $prefix.'contatti_dedicati',
+            'data-conditional-value'  => "true",
+        ),
         /*
         'attributes' => array(
             'data-conditional-id'    => $prefix . 'childof',
@@ -569,7 +602,7 @@ add_action( 'admin_print_scripts-post.php', 'dsi_indirizzo_admin_script', 11 );
 function dsi_indirizzo_admin_script() {
     global $post_type;
     if( 'indirizzo' == $post_type )
-        wp_enqueue_script( 'struttura-admin-script', get_stylesheet_directory_uri() . '/inc/admin-js/indirizzo.js' );
+        wp_enqueue_script( 'struttura-admin-script', get_template_directory_uri() . '/inc/admin-js/indirizzo.js' );
 }
 
 if(!function_exists('dsi_percorsi_di_studio_edit_meta_field')) {

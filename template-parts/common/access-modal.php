@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content perfect-scrollbar">
             <div class="modal-body">
-                <form id="access-form" class="access-main-wrapper" name="loginform" id="loginform" action="<?php echo esc_url( site_url( 'wp-login.php', 'login_post' ) ); ?>" method="post">
+                <form id="access-form" class="access-main-wrapper" name="loginform" action="<?php echo esc_url( site_url( 'wp-login.php', 'login_post' ) ); ?>" method="post">
                     <div class="container">
                         <div class="row variable-gutters mb-0 mb-lg-4 mb-xl-5">
                             <div class="col">
@@ -33,8 +33,12 @@
                             </div>
                             <div class="col-lg-4 offset-lg-2 access-mobile-bg">
                                 <div class="access-login">
-                                    <h3><?php _e("Personale scolastico", "design_scuole_italia"); ?></h3>
-                                    <p class="text-large"><?php _e("Entra nel sito della scuola con le tue credenziali per gestire contenuti, visualizzare circolari e altre funzionalità.", "design_scuole_italia"); ?></p>
+                                    <?php
+                                        $login_title = dsi_get_option("login_title", "login");
+                                        $login_description = dsi_get_option("login_desc", "login");
+                                    ?>
+                                    <h3><?php $login_title ? _e($login_title) :  _e("Personale scolastico", "design_scuole_italia"); ?></h3>
+                                    <p class="text-large"><?php $login_description ? _e($login_description) : _e("Entra nel sito della scuola con le tue credenziali per gestire contenuti, visualizzare circolari e altre funzionalità.", "design_scuole_italia"); ?></p>
                                     <?php if(in_array('wp-spid-italia/wp-spid-italia.php', apply_filters('active_plugins', get_option('active_plugins')))){?>
                                         <div class="col text-center pt-4">
                                             <?php echo do_shortcode("[spid_login_button]"); ?>
@@ -52,7 +56,7 @@
 
                                         <div class="row variable-gutters mb-4">
                                             <div class="col text-right text-underline">
-                                                <p><a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" arial-label="<?php _e( 'Lost your password?' ); ?>"><?php _e( 'Lost your password?' ); ?></a></p>
+                                                <p><a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" aria-label="<?php _e( 'Lost your password?' ); ?>"><?php _e( 'Lost your password?' ); ?></a></p>
                                             </div>
                                         </div>
 
@@ -67,6 +71,11 @@
                                                 <button type="submit" class="btn btn-white btn-block rounded" name="login" value="Accedi"><?php _e("Accedi", "design_scuole_italia"); ?></button>
                                             </div>
                                         </div>
+                                        <?php if(in_array('daggerhart-openid-connect-generic/openid-connect-generic.php', apply_filters('active_plugins', get_option('active_plugins')))){?>
+                                            <div class="col text-center btn btn-primary p-0">
+                                                <?php echo do_shortcode("[openid_connect_generic_login_button]"); ?>
+                                            </div>
+                                        <?php }?>
                                         <!-- <div class="row variable-gutters">
                                             <div class="col text-center">
                                                 <p>Non hai un account? <a href="#">Iscriviti</a></p>

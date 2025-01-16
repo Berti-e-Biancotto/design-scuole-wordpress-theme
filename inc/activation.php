@@ -13,7 +13,7 @@ function dsi_create_pages_on_theme_activation() {
 
 
     // template page per la scuola
-    $new_page_title    = __( 'La Scuola', 'design_scuole_italia' ); // Page's title
+    $new_page_title    = __( 'Scuola', 'design_scuole_italia' ); // Page's title
     $new_page_content  = '';                           // Content goes here
     $new_page_template = 'page-templates/la-scuola.php';       // The template to use for the page
     $page_check        = get_page_by_title( $new_page_title );   // Check if the page already exists
@@ -109,8 +109,8 @@ function dsi_create_pages_on_theme_activation() {
     }
 
 
-    // template page per Le Persone
-    $new_page_title    = __( 'Persone', 'design_scuole_italia' ); // Page's title
+    // template page per Le persone
+    $new_page_title    = __( 'Le persone', 'design_scuole_italia' ); // Page's title
     $new_page_content  = '';                           // Content goes here
     $new_page_template = 'page-templates/persone.php';       // The template to use for the page
     $page_check        = get_page_by_title( $new_page_title );   // Check if the page already exists
@@ -993,6 +993,22 @@ function dsi_create_pages_on_theme_activation() {
     }
 
     /**
+     * creo il menu utente (visibile in bacheca)
+     */
+    $name = __('Utente', "design_scuole_italia");
+
+    wp_delete_nav_menu($name);
+    $menu_object = wp_get_nav_menu_object( $name );
+    if(!$menu_object) {
+        $menu_id = wp_create_nav_menu($name);
+        $menu = get_term_by( 'id', $menu_id, 'nav_menu' );
+
+        $locations_primary_arr = get_theme_mod( 'nav_menu_locations' );
+        $locations_primary_arr["menu-utente"] = $menu->term_id;
+        set_theme_mod( 'nav_menu_locations', $locations_primary_arr );
+    }
+
+    /**
      * aggiungo i menu come widget
      */
 
@@ -1059,6 +1075,21 @@ function dsi_create_pages_on_theme_activation() {
             $admins->add_cap( $cap.$custom_type);
         }
     }
+
+    /**
+     * do il permesso a tutti gli utenti che hanno effettuato l'accesso di vedere i contenuti privati, in modo che si possano pubblicare elementi visibili solo al personale scolastico
+    */
+    if ( ! function_exists( 'get_editable_roles' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/user.php';
+    }
+
+    foreach (get_editable_roles() as $role => $_) {
+        $custom_types = array("posts", "eventi", "documenti", "luoghi", "schede_didattica", "schede_progetto", "strutture", "servizi", "indirizzi_di_studio", "circolari");
+        foreach ($custom_types as $custom_type){
+            get_role($role)->add_cap( 'read_private_' . $custom_type);
+        }
+    }
+
 //    $custom_tax = array("materie", "tipologia_articoli", "classi", "tipologia_documenti", "tipologia_eventi", "tipologia_luoghi", "tipologia_servizi","tipologia_strutture","percorsi-di-studio");
     $custom_tax = array("tipologia_articoli",  "tipologia_documenti", "tipologia_eventi", "tipologia_luoghi", "tipologia_servizi", "tipologia_progetti","tipologia_strutture","tipologia_circolare","percorsi-di-studio");
     $caps_terms = array("manage_","edit_","delete_","assign_");

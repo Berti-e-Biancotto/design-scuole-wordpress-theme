@@ -128,7 +128,8 @@ function dsi_add_persone_metaboxes() {
 		'new_user_section' => 'add-new-user',
         //'new_user_section' => 'add-existing-user',
         // where form will show on new user page. 'add-existing-user' is only other valid option.
-		'priority'     => 'hight',
+        'context'      => 'normal',
+		'priority'     => 'high',
 	) );
 
 	$cmb_user->add_field( array(
@@ -140,13 +141,26 @@ function dsi_add_persone_metaboxes() {
 	) );
 
 	$cmb_user->add_field( array(
+		'name'    => __( 'Protezione privacy', 'design_scuole_italia' ),
+		'id'      => $prefix . 'privacy_hidden',
+		'desc'     => __( 'L\'opzione permette di nascondere le informazioni sensibili dell\'utente.' , 'design_scuole_italia' ),
+		'type'    => 'radio_inline',
+		'options'          => array(
+			'true' => __( 'Si', 'design_scuole_italia' ),
+			'false'     => __( 'No', 'design_scuole_italia' ),
+		),
+		'default' => 'true',
+		'attributes'    => array(
+			'required'    => 'required'
+		),
+	) );
+
+	$cmb_user->add_field( array(
 		'name'    => __( 'Foto della Persona', 'design_scuole_italia' ),
 		'desc'    => __( 'Inserire una fotografia che ritrae il soggetto descritto nella scheda', 'design_scuole_italia' ),
 		'id'      => $prefix . 'foto',
-		'type'    => 'file',
+		'type'    => 'file'
 	) );
-
-
 
 	$cmb_user->add_field( array(
 		'name'    => __( 'Ruolo nell\'organizzazione *', 'design_scuole_italia' ),
@@ -277,19 +291,33 @@ function dsi_add_persone_metaboxes() {
 	) );
 
 	$cmb_user->add_field( array(
+		'id' => $prefix . 'altri_ruoli_struttura_responsabile',
+		'name'    => __( 'Altri ruoli - Responsabile strutture organizzative ', 'design_scuole_italia' ),
+		'desc' => __( 'Altre strutture organizzative di cui è responsabile (Es. consiglio di istituto). Seleziona una struttura organizzativa. Se non la trovi inseriscila <a href="post-new.php?post_type=struttura">cliccando qui</a> ' , 'design_scuole_italia' ),
+		'type'    => 'pw_multiselect',
+    	'options' => dsi_get_strutture_options(),
+            'attributes' => array(
+                'placeholder' =>  __( 'Seleziona una o più strutture', 'design_scuole_italia' ),
+            ),
+	) );
+
+
+	$cmb_user->add_field( array(
 		'id' => $prefix . 'altri_ruoli_struttura',
-		'name'    => __( 'Altri ruoli - strutture organizzative ', 'design_scuole_italia' ),
-		'desc' => __( 'Altre strutture organizzative di cui fa parte (Es consiglio di istituto). Seleziona una struttura organizzativa. Se non la trovi inseriscila <a href="post-new.php?post_type=struttura">cliccando qui</a> ' , 'design_scuole_italia' ),
-		'type'    => 'custom_attached_posts',
-		'column'  => true, // Output in the admin post-listing as a custom column. https://github.com/CMB2/CMB2/wiki/Field-Parameters#column
-		'options' => array(
-			'show_thumbnails' => false, // Show thumbnails on the left
-			'filter_boxes'    => true, // Show a text box for filtering the results
-			'query_args'      => array(
-				'posts_per_page' => 10,
-				'post_type'      => 'struttura',
-			), // override the get_posts args
-		),
+		'name'    => __( 'Altri ruoli - Componente strutture organizzative ', 'design_scuole_italia' ),
+		'desc' => __( 'Altre strutture organizzative di cui fa parte (Es. consiglio di istituto). Seleziona una struttura organizzativa. Se non la trovi inseriscila <a href="post-new.php?post_type=struttura">cliccando qui</a> ' , 'design_scuole_italia' ),
+		'type'    => 'pw_multiselect',
+   		'options' => dsi_get_strutture_options(),
+            'attributes' => array(
+                'placeholder' =>  __( 'Seleziona una o più strutture', 'design_scuole_italia' ),
+            ),
+	) );
+
+	$cmb_user->add_field( array(
+		'name'    => __( 'Funzioni strumentali', 'design_scuole_italia' ),
+		'desc'    => __( 'Definisci qui altre funzioni strumentali attribuite', 'design_scuole_italia' ),
+		'id'      => $prefix . 'altri_ruoli_funzioni_strumentali',
+		'type'    => 'textarea',
         'attributes'    => array(
             'data-conditional-id'     => $prefix . 'ruolo_scuola',
             'data-conditional-value'  => wp_json_encode(array('docente','personaleata'))
@@ -297,8 +325,19 @@ function dsi_add_persone_metaboxes() {
 	) );
 
 	$cmb_user->add_field( array(
-		'name'    => __( 'Altri ruoli - funzioni strumentali ', 'design_scuole_italia' ),
-		'desc'    => __( 'Definisci qui altre funzioni strumentali attribuite ', 'design_scuole_italia' ),
+		'name'    => __( 'Altri ruoli di referente', 'design_scuole_italia' ),
+		'desc'    => __( 'Definisci qui ruoli di referente attribuiti (dove non sono previste strutture o funzioni strumentali) ', 'design_scuole_italia' ),
+		'id'      => $prefix . 'altri_ruoli_referente',
+		'type'    => 'textarea',
+        'attributes'    => array(
+            'data-conditional-id'     => $prefix . 'ruolo_scuola',
+            'data-conditional-value'  => wp_json_encode(array('docente','personaleata'))
+        ),
+	) );
+
+	$cmb_user->add_field( array(
+		'name'    => __( 'Altri ruoli', 'design_scuole_italia' ),
+		'desc'    => __( 'Definisci qui altri ruoli (per componenti strutture, funzioni strumentali o referenti riferirsi agli altri campi previsti) ', 'design_scuole_italia' ),
 		'id'      => $prefix . 'altri_ruoli',
 		'type'    => 'textarea',
         'attributes'    => array(
@@ -384,6 +423,15 @@ function dsi_get_cmb2_user( $query_args ) {
 	return $user_options;
 }
 
+// relazione bidirezionale persona /  struttura responsabile
+new dsi_bidirectional_cmb2_from_usermeta("_dsi_persona_", "altri_ruoli_struttura_responsabile", "persona_box", "_dsi_struttura_responsabile");
+
+// relazione bidirezionale persona /  struttura componente
+new dsi_bidirectional_cmb2_from_usermeta("_dsi_persona_", "altri_ruoli_struttura", "persona_box", "_dsi_struttura_persone");
+
+
+
+
 
 /**
  * aggiungo js per condizionale parent
@@ -393,5 +441,59 @@ add_action( 'admin_print_scripts-user-new.php', 'dsi_utente_admin_script', 11 );
 add_action( 'admin_print_scripts-profile.php', 'dsi_utente_admin_script', 11 );
 
 function dsi_utente_admin_script() {
-		wp_enqueue_script( 'utente-admin-script', get_stylesheet_directory_uri() . '/inc/admin-js/persona.js' );
+		wp_enqueue_script( 'utente-admin-script', get_template_directory_uri() . '/inc/admin-js/persona.js' );
 }
+
+/* WYSIWYG biography */
+function dsi_wysiwyg_bio($user)
+{
+	if (!current_user_can('edit_posts'))
+		return;
+?>
+	<table class="form-table">
+		<tr>
+			<th><label for="description"><?php _e('Biographical Info'); ?></label></th>
+			<td>
+				<?php
+				$description = get_user_meta($user->ID, 'description', true);
+				wp_editor($description, 'description');
+				?>
+				<p class="description"><?php _e('Share a little biographical information to fill out your profile. This may be shown publicly.'); ?></p>
+			</td>
+		</tr>
+	</table>
+<?php
+}
+add_action('show_user_profile', 'dsi_wysiwyg_bio');
+add_action('edit_user_profile', 'dsi_wysiwyg_bio');
+
+
+function dsi_wysiwyg_bio_save_filters()
+{
+	if (!current_user_can('edit_posts'))
+		return;
+	remove_all_filters('pre_user_description');
+}
+add_action('admin_init', 'dsi_wysiwyg_bio_save_filters');
+
+function dsi_wysiwyg_bio_load_js( $hook ) {
+	if ( !current_user_can('edit_posts') )
+		return;
+
+	if ( $hook == 'profile.php' || $hook == 'user-edit.php' ) {
+		wp_enqueue_script(
+			'wysiwyg-bio-admin-script', 
+			get_template_directory_uri() . '/inc/admin-js/persona-wysiwyg-bio.js', 
+			array('jquery'), 
+			false, 
+			true
+		);
+	}
+}
+add_action( 'admin_enqueue_scripts', 'dsi_wysiwyg_bio_load_js', 10, 1 );
+
+add_filter('get_the_author_description', 'wptexturize');
+add_filter('get_the_author_description', 'convert_chars');
+add_filter('get_the_author_description', 'wpautop');
+
+/* end WYSIWYG biography */

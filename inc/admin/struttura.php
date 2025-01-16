@@ -7,7 +7,7 @@ function dsi_register_struttura_post_type() {
 
     /** struttura **/
     $labels = array(
-        'name'          => _x( 'Strutture', 'Post Type General Name', 'design_scuole_italia' ),
+        'name'          => _x( 'Organizzazione', 'Post Type General Name', 'design_scuole_italia' ),
         'singular_name' => _x( 'Struttura', 'Post Type Singular Name', 'design_scuole_italia' ),
         'add_new'       => _x( 'Aggiungi Struttura Organizzativa', 'Post Type Singular Name', 'design_scuole_italia' ),
         'add_new_item'  => _x( 'Aggiungi la Struttura Organizzativa', 'Post Type Singular Name', 'design_scuole_italia' ),
@@ -237,6 +237,39 @@ function dsi_add_struttura_metaboxes() {
 
 
     $cmb_undercontent->add_field( array(
+		'id' => $prefix . 'link_schede_documenti',
+		'name'    => __( 'Documenti', 'design_scuole_italia' ),
+		'desc' => __( 'Inserisci qui tutti i documenti che ritieni utili per attivare il servizio: moduli da compilare, riferimenti di legge e altre informazioni. Se devi caricare il documento <a href="post-new.php?post_type=documento">puoi creare una breve scheda di presentazione</a> (soluzione consigliata e più efficace per gli utenti del sito) oppure caricarlo direttamente nei campi che seguono. ' , 'design_scuole_italia' ),
+		'type'    => 'custom_attached_posts',
+		'column'  => true, // Output in the admin post-listing as a custom column. https://github.com/CMB2/CMB2/wiki/Field-Parameters#column
+		'options' => array(
+			'show_thumbnails' => false, // Show thumbnails on the left
+			'filter_boxes'    => true, // Show a text box for filtering the results
+			'query_args'      => array(
+				'posts_per_page' => 10,
+				'post_type'      => 'documento',
+			), // override the get_posts args
+		),
+	) );
+
+
+	$cmb_undercontent->add_field( array(
+		'id' => $prefix . 'file_documenti',
+		'name'    => __( 'Carica documenti', 'design_scuole_italia' ),
+		'desc' => __( 'Se l\'allegato non è descritto da una scheda documento, link all\'allegato (es. link a una locandina). ' , 'design_scuole_italia' ),
+		'type' => 'file_list',
+		// 'preview_size' => array( 100, 100 ), // Default: array( 50, 50 )
+		// 'query_args' => array( 'type' => 'image' ), // Only images attachment
+		// Optional, override default text strings
+		'text' => array(
+			'add_upload_files_text' => __('Aggiungi un nuovo Documento', 'design_scuole_italia' ), // default: "Add or Upload Files"
+			'remove_image_text' => __('Rimuovi Documento', 'design_scuole_italia' ), // default: "Remove Image"
+			'remove_text' => __('Rimuovi', 'design_scuole_italia' ), // default: "Remove"
+		),
+	) );
+
+
+    $cmb_undercontent->add_field( array(
             'name'       => __('Persone responsabili ', 'design_scuole_italia' ),
             'desc' => __( 'Link alla scheda responsabile della struttura. ', 'design_scuole_italia' ),
             'id' => $prefix . 'responsabile',
@@ -289,9 +322,12 @@ function dsi_add_struttura_metaboxes() {
     $cmb_undercontent->add_field( array(
         'id' => $prefix .'sedi',
         'name'    => __( 'Sedi', 'design_scuole_italia' ),
-        'desc' => __( 'Selezione i <a href="edit.php?post_type=luogo">luoghi</a> che rappresentano le sedi della struttura, in ordine di importanza se più di uno. ' , 'design_scuole_italia' ),
+        'desc' => __( 'Seleziona i <a href="edit.php?post_type=luogo">luoghi</a> che rappresentano le sedi della struttura, in ordine di importanza se più di uno. ' , 'design_scuole_italia' ),
         'type'    => 'pw_multiselect',
         'options' =>  dsi_get_luoghi_options(),
+		'attributes' => array(
+			'placeholder' => 'Seleziona i luoghi che rappresentano le sedi della struttura, in ordine di importanza se più di uno.'
+		),
     ) );
 
     /*
@@ -303,12 +339,22 @@ function dsi_add_struttura_metaboxes() {
         'options' =>  dsi_get_luoghi_options(),
     ) );
 */
+    $cmb_undercontent->add_field( array(
+        'id'   => $prefix . 'contatti_dedicati',
+        'name' => __( 'Modalità di contatto', 'design_scuole_italia' ),
+        'desc' => __( 'Sono presenti contatti dedicati per la struttura. In caso contrario vengono mostrati in automatico i contatti (email e telefono) dell\'ufficio relazioni con il pubblico (URP) inseriti in Configurazione' , 'design_scuole_italia' ),
+        'type' => 'checkbox',
+    ) );
 
     $cmb_undercontent->add_field( array(
         'id'         => $prefix . 'telefono',
-        'name'       => __( 'Recapito telefonico struttura', 'design_scuole_italia' ),
+        'name'       => __( 'Recapito telefonico della struttura', 'design_scuole_italia' ),
         'desc'       => __( 'Numero di telefono della struttura. ', 'design_scuole_italia' ),
         'type'       => 'text',
+        'attributes'    => array(
+            'data-conditional-id'     => $prefix.'contatti_dedicati',
+            'data-conditional-value'  => "true",
+        ),
     ) );
 
 
@@ -317,9 +363,22 @@ function dsi_add_struttura_metaboxes() {
         'name'       => __( 'Email della struttura', 'design_scuole_italia' ),
         'desc'       => __( 'Email della struttura. ', 'design_scuole_italia' ),
         'type'       => 'text_email',
+        'attributes'    => array(
+            'data-conditional-id'     => $prefix.'contatti_dedicati',
+            'data-conditional-value'  => "true",
+        ),
     ) );
-
-
+	
+    $cmb_undercontent->add_field( array(
+        'id'         => $prefix . 'pec',
+        'name'       => __( 'Posta elettronica certificata (PEC) della struttura', 'design_scuole_italia' ),
+        'desc'       => __( 'PEC della struttura. ', 'design_scuole_italia' ),
+        'type'       => 'text_email',
+        'attributes'    => array(
+            'data-conditional-id'     => $prefix.'contatti_dedicati',
+            'data-conditional-value'  => "true",
+        ),
+    ) );
 
     $cmb_undercontent->add_field( array(
         'id' => $prefix . 'altre_info',
@@ -377,6 +436,11 @@ new dsi_bidirectional_cmb2("_dsi_struttura_", "struttura", "link_schede_servizi"
 // relazione bidirezionale struttura / percorso
 new dsi_bidirectional_cmb2("_dsi_struttura_", "struttura", "link_servizi_didattici", "box_sottotitolo", "_dsi_indirizzo_link_struttura_didattica");
 
+// relazione bidirezionale struttura responsabile / persona
+new dsi_bidirectional_cmb2_to_usermeta("_dsi_struttura_", "struttura", "responsabile", "box_elementi_struttura", "_dsi_persona_altri_ruoli_struttura_responsabile");
+
+// relazione bidirezionale struttura componente / persona
+new dsi_bidirectional_cmb2_to_usermeta("_dsi_struttura_", "struttura", "persone", "box_elementi_struttura", "_dsi_persona_altri_ruoli_struttura");
 
 /**
  * salvo il parent cmb2
@@ -425,5 +489,5 @@ add_action( 'admin_print_scripts-post.php', 'dsi_struttura_admin_script', 11 );
 function dsi_struttura_admin_script() {
     global $post_type;
     if( 'struttura' == $post_type )
-        wp_enqueue_script( 'struttura-admin-script', get_stylesheet_directory_uri() . '/inc/admin-js/struttura.js' );
+        wp_enqueue_script( 'struttura-admin-script', get_template_directory_uri() . '/inc/admin-js/struttura.js' );
 }

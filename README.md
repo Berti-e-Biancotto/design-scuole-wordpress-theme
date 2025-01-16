@@ -2,11 +2,12 @@
 [![Join the #design siti scuole channel](https://img.shields.io/badge/Slack%20channel-%23design_siti_scuole-blue.svg)](https://developersitalia.slack.com/messages/design-siti-scuole/)
 
 ## **Un sito per le scuole italiane**
-### I primi passi con il tema Wordpress (2.4.0)
+### I primi passi con il tema Wordpress (2.15.0)
 
 **Design Scuole Italia** è il tema WordPress che permette di aderire al [modello di sito istituzionale delle scuole](https://designers.italia.it/modelli/scuole/), progettato dal Dipartimento per la trasformazione digitale in collaborazione con il Ministero dell’Istruzione.
 
 ## **Installazione e supporto**
+
 ### **Come scaricare il tema**
 
 Per scaricare il tema hai le seguenti opzioni:
@@ -18,12 +19,28 @@ Per scaricare il tema hai le seguenti opzioni:
 + eseguire il **download**, cliccando prima sul pulsante "Code" e poi sulla voce "Download ZIP" dal menu a tendina 
 ![download-zip](https://user-images.githubusercontent.com/69706/188414872-9a0c33c5-19b1-461a-b577-29cb08723806.png)
 
-Se non conosci il comando `fork` puoi [leggere questa guida](https://docs.github.com/en/get-started/quickstart/fork-a-repo) (disponibile solo in inglese)
+Se non conosci il comando `fork` puoi [leggere questa guida](https://docs.github.com/en/get-started/quickstart/fork-a-repo) (disponibile solo in inglese).
 
 _👉 **Nota bene**: se decidi di scaricare il tema tramite il `fork` non è necessario effettuare le _pull request_ sul repository originale_
 
+### Come inserire il tema all'interno di un'installazione WordPress
+
+Una volta scaricato il repository, inserisci la cartella all'interno del progetto WordPress al seguente percorso `wp-content > themes `.
+
+Successivamente, crea la version _"child"_ del tema duplicando la cartella appena copia e aggiungendo l'estesione `-child`.
+
+Esempio: 
+```
+wp-content > themes > design-scuole-wordpress-theme (tema parent)
+wp-content > themes > design-scuole-wordpress-theme-child (tema child)
+```
+
+> È raccomandata l'installazione del tema come _"child"_ in modo tale da poterlo aggiornare facilmente senza compromettere le personalizzazioni locali. [Vedi la guida ufficiale](https://developer.wordpress.org/themes/advanced-topics/child-themes/#1-create-a-child-theme-folder) su come installare un tema _"child"_.
+
 ### Come aggiornare il tema
-Se hai scaricato il tema tramite il comando **fork** e vuoi aggiornarla all'ultima versione, esegui il comando `git pull` da terminale.
+Le modalità di aggiornamento dipendono dall'opzione scelta per l'installazione:
+- Se hai scaricato il tema tramite il comando **fork**, esegui il comando `git pull` da terminale.
+- Se hai scaricato il file `.zip`, copia la cartella della nuova versione all'interno del percorso `wp-content > themes >design-scuole-wordpress-theme ` **(Raccomandato)**  
 
 ### Dipendenze 
 
@@ -226,8 +243,10 @@ L’area di configurazione è divisa in tab per le diverse aree del sito.
 
 Cliccando su “Configurazione" è possibile definire:
 
--	**opzioni di base**: i contenuti nell’header del sito, come il tipo di istituto, il nome dell’istituto e la città;
--	**home**: i contenuti delle sezioni notizie e servizi sull’homepage del sito;
+-	**opzioni di base**: i contenuti dell'intestazione del sito, come il tipo di istituto, il nome dell’istituto e la città;
+-	**dati fiscali e di contatto**: le informazioni di base della scuola (indirizzo, pec, codice ipa, codice meccanografico, ecc), vengono riportate nel piè di pagina e nelle pagine interne;
+-	**avvisi in Home**: i messaggi di avviso mostrati mostrati all'inizio dei contenuti della pagina iniziale;
+-	**home**: i contenuti in evidenza, le novità, i banner, i servizi e gli argomenti mostrati nella pagina iniziale del sito;
 -	**scuola**: tutti i contenuti relativi alla sezione scuola, ovvero l’immagine e la citazione principali, la timeline della storia della scuola, le strutture dell’organizzazione scolastica, i luoghi, l’area documentale e i numeri della scuola;
 -	**presentazione**: area dove selezionare gli articoli che popolano la sezione “presentazione della scuola”;
 -	**servizi**: area di gestione della pagina di panoramica dei servizi, in cui è possibile selezionare le tipologie di servizi da mostrare; 
@@ -237,8 +256,9 @@ Cliccando su “Configurazione" è possibile definire:
 -	**organizzazione**: area di configurazione della pagina di presentazione dell’organizzazione scolastica, tramite la selezione delle strutture organizzative da mostrare;
 -	**luoghi**: area in cui configurare la tipologia e l’ordine delle tipologie di luoghi da mostrare;
 -	**documenti**: area di configurazione dei documenti, organizzati in base alle tipologie selezionate;
--	**servizi esterni**: area per configurare i servizi esterni alla scuola da mostrare nella modale di login (registro elettronico o altri);
--	**altro**: i contenuti del footer (in cui vanno inserite le informazioni di base della scuola: indirizzo, pec, codice ipa, codice meccanografico, etc), il token mapbox (da creare per utilizzare le mappe openstreetmap dei luoghi), il testo delle mail delle circolari, e il setup della sezione albo.
+-	**accesso ai servizi**: area per configurare i servizi esterni alla scuola da mostrare nella modale di accesso (registro elettronico o altri) e le informazioni del modulo di login all'area riservata di Wordpress;
+-	**socialmedia**: collegamenti ai social mostrati nell'intestazione e nel piè di pagina.
+-	**altro**: la descrizione della sezione Argomenti, i contenuti ulteriori del piè di pagina, il token mapbox (da creare per utilizzare le mappe openstreetmap dei luoghi), la configurazione delle estensioni protette dall'accesso esterno, il testo delle mail delle circolari e il setup della sezione albo.
 
 
 ### **La community di riferimento**
